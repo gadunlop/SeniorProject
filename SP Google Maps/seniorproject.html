@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Senior Project Map</title>
+</head>
+	<style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+	
+  <body>
+    <div id="map"></div>
+	  
+    <script>
+      var map;
+	  var woodward = {lat: 35.307462, lng: -80.735690};
+	  var charlotte = {lat: 35.226553, lng: -80.837086};
+	  var NC = {lat:35.499266, lng: -78.606339};
+
+	  
+      function initMap() { 
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: woodward,
+          zoom: 5,
+			
+			//Styling for the map in UNCC colors
+			styles: [
+			  {
+				"elementType": "labels",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "administrative",
+				"elementType": "geometry",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "administrative.land_parcel",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "administrative.neighborhood",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "landscape.man_made",
+				"elementType": "geometry.fill",
+				"stylers": [
+				  {
+					"color": "#046a38"
+				  }
+				]
+			  },
+			  {
+				"featureType": "landscape.natural",
+				"elementType": "geometry.fill",
+				"stylers": [
+				  {
+					"color": "#27251f"
+				  }
+				]
+			  },
+			  {
+				"featureType": "poi",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "road",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "road",
+				"elementType": "labels.icon",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "transit",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "water",
+				"elementType": "geometry.fill",
+				"stylers": [
+				  {
+					"color": "#b9975b"
+				  }
+				]
+			  }
+			]
+		});
+		// Create an array of alphabetical characters used to label the markers.
+        var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		var markers = locations.map(function(location, i) {
+          return new google.maps.Marker({
+            position: location,
+            label: labels[i % labels.length]
+          });
+      	});
+//		var markerCluster = new MarkerClusterer(map, markers,
+//      	{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+		  
+		//Polygon Data for United States, NC, Charlotte, UNCC
+		  var nationLayer = new google.maps.Data({map:map});
+		  var stateLayer = new google.maps.Data({map:map});
+		  //var texasLayer = new google.maps.Data({map:map});
+		  var countyLayer = new google.maps.Data({map:map});
+		  
+		  //GEOJSON from Johan github
+		  nationLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA.geo.json');
+		  stateLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/NC.geo.json');
+		  //texasLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/TX.geo.json');
+		  countyLayer.loadGeoJson('meck_geoJSON.json');
+		  
+		//Styling for Polygon data
+		  nationLayer.setStyle({
+		  	fillColor: 'green',
+			strokeColor: 'green',
+		  	strokeWeight: 2,
+			visible: true,
+			clickable: true
+		});
+		 	stateLayer.setStyle({
+			visible: false,
+			clickable: true
+		});
+		 	countyLayer.setStyle({
+			visible: false,
+			clickable: true
+		});
+		  
+		  
+		//listener to zoom in on North Carolina when USA polygon is clicked
+		  nationLayer.addListener('click', function(){
+			  stateLayer.setStyle({
+				fillColor: 'green',
+				strokeColor: 'green',
+		  		strokeWeight: 2,
+				visible: true,
+				clickable: true
+			  });
+			  nationLayer.setStyle({
+				 visible: false
+			  });
+			  map.setCenter({lat:35.499266, lng: -78.606339});
+			  map.setZoom(7);
+		  });
+		  
+		 //listener to zoom in on Mecklenberg when NC polygon is clicked
+		  	stateLayer.addListener('click', function(){
+			  countyLayer.setStyle({
+				fillColor: 'green',
+				strokeColor: 'green',
+		  		strokeWeight: 2,
+				visible: true,
+				clickable: true
+			  });
+				texasLayer.setStyle({
+					fillColor: 'green',
+					strokeColor: 'green',
+		  			strokeWeight: 2,
+					visible: true,
+					clickable: true
+			  	});
+				
+			  stateLayer.setStyle({
+				 visible: false
+			  });
+			  map.setCenter({lat: 35.226553, lng: -80.837086});
+			  map.setZoom(10);
+		  });
+
+	  }
+
+		//Locations for the Markers
+//	  	var locations = [
+//		  {lat: 35.307462, lng: -80.735690},
+//		  {lat: 35.226553, lng: -80.837086},
+//		  {lat:35.499266, lng: -78.606339}  
+//		];
+
+    </script>
+	<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+	</script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApa2GOvUTjcDKfvQ04IHqvvk__TfFfOPI&callback=initMap"
+    async defer></script>
+</body>
+
+</html>

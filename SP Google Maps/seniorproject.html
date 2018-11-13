@@ -144,14 +144,14 @@
 		//Polygon Data for United States, NC, Charlotte, UNCC
 		  var nationLayer = new google.maps.Data({map:map});
 		  var stateLayer = new google.maps.Data({map:map});
-		  //var texasLayer = new google.maps.Data({map:map});
+		  var texasLayer = new google.maps.Data({map:map});
 		  var countyLayer = new google.maps.Data({map:map});
 		  
 		  //GEOJSON from Johan github
 		  nationLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA.geo.json');
 		  stateLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/NC.geo.json');
-		  //texasLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/TX.geo.json');
-		  countyLayer.loadGeoJson('meck_geoJSON.json');
+		  texasLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/TX.geo.json');
+		  countyLayer.loadGeoJson('Charlotte_Zoning.json');
 		  
 		//Styling for Polygon data
 		  nationLayer.setStyle({
@@ -192,7 +192,7 @@
 			  countyLayer.setStyle({
 				fillColor: 'green',
 				strokeColor: 'green',
-		  		strokeWeight: 2,
+		  		strokeWeight: 1,
 				visible: true,
 				clickable: true
 			  });
@@ -214,13 +214,13 @@
 	  }
 
 		//Locations for the Markers
-//	  	var locations = [
-//		  {lat: 35.307462, lng: -80.735690},
-//		  {lat: 35.226553, lng: -80.837086},
-//		  {lat:35.499266, lng: -78.606339}  
-//		];
+	  	var locations = [
+		  {lat: 35.307462, lng: -80.735690},
+		  {lat: 35.226553, lng: -80.837086},
+		  {lat:35.499266, lng: -78.606339}  
+		];
 
-    </script>
+    </script>v
 	<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
 	</script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApa2GOvUTjcDKfvQ04IHqvvk__TfFfOPI&callback=initMap"

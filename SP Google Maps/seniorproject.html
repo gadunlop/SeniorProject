@@ -22,12 +22,11 @@
     <div id="map"></div>
 	  
     <script>
-      var map;
-	  var woodward = {lat: 35.307462, lng: -80.735690};
-	  var charlotte = {lat: 35.226553, lng: -80.837086};
-	  var NC = {lat:35.499266, lng: -78.606339};
+      	var map;
+		var woodward = {lat: 35.307462, lng: -80.735690};
+		var charlotte = {lat: 35.226553, lng: -80.837086};
+		var NC = {lat:35.499266, lng: -78.606339};
 
-	  
       function initMap() { 
         map = new google.maps.Map(document.getElementById('map'), {
           center: woodward,
@@ -90,7 +89,7 @@
 				"featureType": "poi",
 				"stylers": [
 				  {
-					"visibility": "off"
+					"visibility": "on"
 				  }
 				]
 			  },
@@ -98,7 +97,7 @@
 				"featureType": "road",
 				"stylers": [
 				  {
-					"visibility": "off"
+					"visibility": "on"
 				  }
 				]
 			  },
@@ -130,28 +129,21 @@
 			  }
 			]
 		});
-		// Create an array of alphabetical characters used to label the markers.
-        var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		var markers = locations.map(function(location, i) {
-          return new google.maps.Marker({
-            position: location,
-            label: labels[i % labels.length]
-          });
-      	});
-//		var markerCluster = new MarkerClusterer(map, markers,
-//      	{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-		  
-		//Polygon Data for United States, NC, Charlotte, UNCC
+
+
+		//Polygon Data for United States, NC, Charlotte, UNCC, Woodward
 		  var nationLayer = new google.maps.Data({map:map});
 		  var stateLayer = new google.maps.Data({map:map});
-		  var texasLayer = new google.maps.Data({map:map});
 		  var countyLayer = new google.maps.Data({map:map});
+		  var schoolLayer = new google.maps.Data({map:map});
+		  var woodwardLayer = new google.maps.Data({map:map});
 		  
-		  //GEOJSON from Johan github
+		//GEOJSON from Johan github
 		  nationLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA.geo.json');
 		  stateLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/NC.geo.json');
-		  texasLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/TX.geo.json');
-		  countyLayer.loadGeoJson('Charlotte_Zoning.json');
+		  countyLayer.loadGeoJson('charlotte_zoning_1.json');
+		  schoolLayer.loadGeoJson('UNCC_geoJSON.json');
+		  woodwardLayer.loadGeoJson('woodward_geoJSON.json')
 		  
 		//Styling for Polygon data
 		  nationLayer.setStyle({
@@ -161,66 +153,116 @@
 			visible: true,
 			clickable: true
 		});
-		 	stateLayer.setStyle({
+		  stateLayer.setStyle({
 			visible: false,
-			clickable: true
+			clickable: false
 		});
-		 	countyLayer.setStyle({
+		  countyLayer.setStyle({
 			visible: false,
-			clickable: true
+			clickable: false
+		});
+		  schoolLayer.setStyle({
+			visible: false,
+			clickable: false
+		});
+		  woodwardLayer.setStyle({
+			visible: false,
+			clickable: false
 		});
 		  
-		  
-		//listener to zoom in on North Carolina when USA polygon is clicked
-		  nationLayer.addListener('click', function(){
+		//listener to call zoom in function from one polygon to another as a polygon is clicked
+		  nationLayer.addListener('click', nationState);  
+		  stateLayer.addListener('click', stateCounty);
+		  countyLayer.addListener('click', countySchool);
+		  schoolLayer.addListener('click', schoolBuilding);
+
+		//Functions navigating between the various levels (eg: nationState is from nation to state level)
+		  function nationState(){
 			  stateLayer.setStyle({
+				  fillColor: 'green',
+				  strokeColor: 'green',
+				  strokeWeight: 2,
+				  visible: true,
+				  clickable: true
+			  });
+			  nationLayer.setStyle({
+				  visible: false
+			  });
+			  countyLayer.setStyle({
+				 visible: false
+			  });
+			  schoolLayer.setStyle({
+				  visible: false
+			  });
+			  map.setCenter({lat:35.499266, lng: -78.606339});
+			  map.setZoom(7);
+		  } 
+		  function stateCounty(){
+				countyLayer.setStyle({
+					fillColor: 'green',
+					strokeColor: 'green',
+					strokeWeight: 1,
+					visible: true,
+					clickable: true
+			  });
+			  	nationLayer.setStyle({
+				    visible: false
+			  });
+			  	stateLayer.setStyle({
+				 	visible: false
+			  });
+			  schoolLayer.setStyle({
+				  visible: false
+			  });
+			  map.setCenter({lat: 35.226553, lng: -80.837086});
+			  map.setZoom(10);
+			}
+		  function countySchool(){
+			  schoolLayer.setStyle({
 				fillColor: 'green',
-				strokeColor: 'green',
-		  		strokeWeight: 2,
+				strokeColor: 'red',
+		  		strokeWeight: 3,
 				visible: true,
 				clickable: true
 			  });
 			  nationLayer.setStyle({
-				 visible: false
+				  visible: false
 			  });
-			  map.setCenter({lat:35.499266, lng: -78.606339});
-			  map.setZoom(7);
-		  });
-		  
-		 //listener to zoom in on Mecklenberg when NC polygon is clicked
-		  	stateLayer.addListener('click', function(){
+			  stateLayer.setStyle({
+				 	visible: false
+			  });
 			  countyLayer.setStyle({
-				fillColor: 'green',
-				strokeColor: 'green',
-		  		strokeWeight: 1,
+				 visible: false
+			  });	
+			  map.setCenter({lat: 35.307462, lng: -80.735690});
+			  map.setZoom(13);
+		  }
+		  function schoolBuilding(){
+			  woodwardLayer.setStyle({
+				fillColor: 'gold',
+				strokeColor: 'red',
+		  		strokeWeight: 3,
 				visible: true,
 				clickable: true
 			  });
-				texasLayer.setStyle({
-					fillColor: 'green',
-					strokeColor: 'green',
-		  			strokeWeight: 2,
-					visible: true,
-					clickable: true
-			  	});
-				
+			  nationLayer.setStyle({
+				  visible: false
+			  });
 			  stateLayer.setStyle({
+				  visible: false
+			  });
+			  countyLayer.setStyle({
 				 visible: false
 			  });
-			  map.setCenter({lat: 35.226553, lng: -80.837086});
-			  map.setZoom(10);
-		  });
-
+			  schoolLayer.setStyle({
+				  visible: false
+			  });
+			  map.setCenter( {lat: 35.307462, lng: -80.735690});
+			  map.setZoom(16);
+		  }
 	  }
 
-		//Locations for the Markers
-	  	var locations = [
-		  {lat: 35.307462, lng: -80.735690},
-		  {lat: 35.226553, lng: -80.837086},
-		  {lat:35.499266, lng: -78.606339}  
-		];
-
-    </script>v
+    </script>
 	<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
 	</script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApa2GOvUTjcDKfvQ04IHqvvk__TfFfOPI&callback=initMap"

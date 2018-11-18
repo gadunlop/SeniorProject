@@ -26,10 +26,11 @@
 		var woodward = {lat: 35.307462, lng: -80.735690};
 		var charlotte = {lat: 35.226553, lng: -80.837086};
 		var NC = {lat:35.499266, lng: -78.606339};
+		var marker = 0;
 
       function initMap() { 
         map = new google.maps.Map(document.getElementById('map'), {
-          center: woodward,
+          center: {lat: 37.09024, lng: -95.712891},
           zoom: 5,
 			
 			//Styling for the map in UNCC colors
@@ -171,13 +172,45 @@
 		});
 		  
 		//listener to call zoom in function from one polygon to another as a polygon is clicked
-		  nationLayer.addListener('click', nationState);  
-		  stateLayer.addListener('click', stateCounty);
-		  countyLayer.addListener('click', countySchool);
-		  schoolLayer.addListener('click', schoolBuilding);
+		  nationLayer.addListener('click', State);  
+		  stateLayer.addListener('click', County);
+		  countyLayer.addListener('click', School);
+		  schoolLayer.addListener('click', Building);
+		  
+		  //nationLayer.addListener('dblclick', State);  
+		  //stateLayer.addListener('dblclick', County);
+		  map.addListener('click', function(){
+			  if(marker == 1){Nation();}
+			  if(marker == 2){State();}
+			  if(marker == 3){County();}
+			  if(marker == 4){School();}
+		  });
+		  schoolLayer.addListener('dblclick', County);
 
 		//Functions navigating between the various levels (eg: nationState is from nation to state level)
-		  function nationState(){
+		  function Nation(){
+			  marker = 0;
+			  nationLayer.setStyle({
+				  fillColor: 'green',
+				  strokeColor: 'green',
+				  strokeWeight: 2,
+				  visible: true,
+				  clickable: true
+			  });
+			  stateLayer.setStyle({
+				  visible: false
+			  });
+			  countyLayer.setStyle({
+				 visible: false
+			  });
+			  schoolLayer.setStyle({
+				  visible: false
+			  });
+			  map.setCenter({lat: 37.09024, lng: -95.712891});
+			  map.setZoom(5);
+		  }
+		  function State(){
+			  marker = 1;
 			  stateLayer.setStyle({
 				  fillColor: 'green',
 				  strokeColor: 'green',
@@ -197,8 +230,9 @@
 			  map.setCenter({lat:35.499266, lng: -78.606339});
 			  map.setZoom(7);
 		  } 
-		  function stateCounty(){
-				countyLayer.setStyle({
+		  function County(){
+			  marker = 2;
+			  countyLayer.setStyle({
 					fillColor: 'green',
 					strokeColor: 'green',
 					strokeWeight: 1,
@@ -217,7 +251,8 @@
 			  map.setCenter({lat: 35.226553, lng: -80.837086});
 			  map.setZoom(10);
 			}
-		  function countySchool(){
+		  function School(){
+			  marker = 3;
 			  schoolLayer.setStyle({
 				fillColor: 'green',
 				strokeColor: 'red',
@@ -237,7 +272,8 @@
 			  map.setCenter({lat: 35.307462, lng: -80.735690});
 			  map.setZoom(13);
 		  }
-		  function schoolBuilding(){
+		  function Building(){
+			  marker = 4;
 			  woodwardLayer.setStyle({
 				fillColor: 'gold',
 				strokeColor: 'red',

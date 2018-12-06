@@ -33,13 +33,41 @@
 		var schoolCenter = {lat: 35.307462, lng: -80.735690};
 		var buildingCenter = {lat: 35.307462, lng: -80.735690};
 		
-		var contentString = '<div id="content">'+
+		var nationContentString = '<div id="content">'+
       '<div id="siteNotice">'+
       '</div>'+
-      '<h1 id="firstHeading" class="firstHeading">#WeLiveInASociety</h1>'+
+      '<h1 id="firstHeading" class="firstHeading">#OrangeManBad</h1>'+
       '</div>'+
       '</div>';
 
+		var stateContentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">#VoteFraud</h1>'+
+      '</div>'+
+      '</div>';
+
+		var countyContentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">#LightRail</h1>'+
+      '</div>'+
+      '</div>';
+
+		var schoolContentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">#OrangeManBad</h1>'+
+      '</div>'+
+      '</div>';
+
+		var buildingContentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">#LunchAndLearn</h1>'+
+      '</div>'+
+      '</div>';
+				
 		
 
       function initMap() { 
@@ -146,7 +174,23 @@
 		});
 		
 		var infowindowNation = new google.maps.InfoWindow({
-			content: contentString
+			content: nationContentString
+		});
+
+		var infowindowState = new google.maps.InfoWindow({
+			content: stateContentString
+		});
+
+		var infowindowCounty = new google.maps.InfoWindow({
+			content: countyContentString
+		});
+
+		var infowindowSchool = new google.maps.InfoWindow({
+			content: schoolContentString
+		});
+
+		var infowindowBuilding = new google.maps.InfoWindow({
+			content: buildingContentString
 		});
 
 		//Polygon Data for United States, NC, Charlotte, UNCC, Woodward
@@ -170,9 +214,37 @@
 				visible: false
 			});
 
+			var stateMarker = new google.maps.Marker({
+				position: stateCenter,
+				map: map,
+				title: 'State Marker',
+				visible: false
+			});
+
+			var countyMarker = new google.maps.Marker({
+				position: countyCenter,
+				map: map,
+				title: 'County Marker',
+				visible: false
+			});
+
+			var schoolMarker = new google.maps.Marker({
+				position: schoolCenter,
+				map: map,
+				title: 'County Marker',
+				visible: false
+			});
+
+			var buildingMarker = new google.maps.Marker({
+				position: buildingCenter,
+				map: map,
+				title: 'Building Marker',
+				visible: false
+			});
+
 		//Styling for Polygon data
 			infowindowNation.open(map, nationMarker);
-			console.log("Funciton Loaded FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFUCK");
+		
 		  nationLayer.setStyle({
 		  	fillColor: 'green',
 			strokeColor: 'green',
@@ -215,6 +287,10 @@
 
 		//Functions navigating between the various levels (eg: nationState is from nation to state level)
 		  function Nation(){
+				if(marker==1){
+					infowindowState.close();
+				}
+				infowindowNation.open(map, nationMarker);
 			  marker = 0;
 			  nationLayer.setStyle({
 				  fillColor: 'green',
@@ -236,6 +312,13 @@
 			  map.setZoom(5);
 		  }
 		  function State(){
+				if(marker==0){
+					infowindowNation.close(map, nationMarker);
+				}
+				else{
+					infowindowCounty.close(map, countyMarker);
+				}
+				infowindowState.open(map, stateMarker);
 			  marker = 1;
 			  stateLayer.setStyle({
 				  fillColor: 'green',
@@ -257,6 +340,13 @@
 			  map.setZoom(7);
 		  } 
 		  function County(){
+				if(marker==1){
+					infowindowState.close();
+				}
+				else{
+					infowindowSchool.close();
+				}
+				infowindowCounty.open(map, countyMarker);
 			  marker = 2;
 			  countyLayer.setStyle({
 					fillColor: 'green',
@@ -278,6 +368,13 @@
 			  map.setZoom(10);
 			}
 		  function School(){
+				if(marker==2){
+					infowindowCounty.close();
+				}
+				else{
+					infowindowBuilding.close();
+				}
+				infowindowSchool.open(map, schoolMarker);
 			  marker = 3;
 			  schoolLayer.setStyle({
 				fillColor: 'green',
@@ -299,6 +396,8 @@
 			  map.setZoom(13);
 		  }
 		  function Building(){
+				infowindowSchool.close();
+				infowindowBuilding.open(map, schoolMarker);
 			  marker = 4;
 			  woodwardLayer.setStyle({
 				fillColor: 'gold',

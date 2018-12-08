@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Senior Project Map</title>
+	
+	<!--JQuery-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript" src="js/map.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" 
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" 
+        crossorigin="anonymous">
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js"
+        integrity="sha384-BnFYVbw3PHhz5qWXTCSL12MjPc3KxjdKPx7R4R5JjIzxFmYX267NDyJ9B/nZANdg" 
+        crossorigin="anonymous">
+	</script>
+	<script src="jquery.click-firewords.js"></script>
+</head>
+	<style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+		
+		/*Styling for infoboxes*/
+		.first-heading {
+		   font-family: 'Open Sans Condensed', sans-serif;
+		   font-size: 60px;
+		   font-weight: 400;
+		   padding: 10px;
+		   background-color: #48b5e9;
+		   color: #38A1F3;
+		   margin: 1px;
+		   border-radius: 2px 2px 0 0; /* In accordance with the rounding of the default infowindow corners. */
+		}
+		}
+
+		/*Styling Adapted from tutorial at: http://en.marnoto.com/2014/09/5-formas-de-personalizar-infowindow.html*/
+		.gm-style-iw {
+			top: 15px !important;
+			left: 0px !important;
+			background-color: #48b5e9;
+			box-shadow: 0 1px 6px rgba(178, 178, 178, 0.6);
+			border: 1px solid rgba(72, 181, 233, 0.6);
+			border-radius: 2px 2px 10px 10px;
+		}
+
+		#iw-container .iw-title {
+			font-family: 'Open Sans Condensed', sans-serif;
+			font-size: 60px;
+			font-weight: 400;
+			padding: 15px;
+			color: white;
+			background-color: #38A1F3;
+			margin: 0;
+			border-radius: 2px 2px 0 0;
+		}
+
+
+    </style>
+	
+  <body>
+	  
+    <div id="map"></div>
+	  
+    <script>
+		
+		//Add Anime.js Fireworks effect on click
+		//Code adapted from example by Anime.js creator, Julian Garnier: https://codepen.io/juliangarnier/pen/gmOwJX 
+		$(function () {
+			$('#map').clickFireworks({
+				id: 'fireworks', // canvas id
+				appendTo: '#map', // append canvas to where, default is body
+				zIndex: 1000 // canvas z-index, make it higher than anything on the page
+			});
+		});
+		
+		//Various Variables for relevant location
+      	var map;
+		var woodward = {lat: 35.307462, lng: -80.735690};
+		var charlotte = {lat: 35.226553, lng: -80.837086};
+		var NC = {lat:35.499266, lng: -78.606339};
+		var marker = 0;
+		var nationCenter = {lat: 37.09024, lng: -95.712891};
+		var stateCenter = {lat:35.499266, lng: -78.606339};
+		var countyCenter = {lat: 35.226553, lng: -80.837086};
+		var schoolCenter = {lat: 35.307462, lng: -80.735690};
+		var buildingCenter = {lat: 35.307462, lng: -80.735690};
+		
+		//The string content that will go inside the infoboxes
+		var nationContentString = '<div id="iw-container"><div class="iw-title">#ORANGEMANBAD</div></div>';
+		var stateContentString = '<div id="iw-container"><div class="iw-title">#VoteFraud</div></div>';
+		var countyContentString = '<div id="iw-container"><div class="iw-title">#LightRail</div></div>';
+		var schoolContentString = '<div id="iw-container"><div class="iw-title">#ORANGEMANBAD</div></div>';
+		var buildingContentString = '<div id="iw-container"><div class="iw-title">#LunchAndLearn</div></div>';
+
+				
+		
+
+      function initMap() { 
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: nationCenter,
+          zoom: 5,
+
+			//Styling for the map in UNCC colors
+			styles:[
+			  {
+				"elementType": "labels",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "administrative",
+				"elementType": "geometry",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "administrative.land_parcel",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "administrative.neighborhood",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "landscape",
+				"stylers": [
+				  {
+					"color": "#000000"
+				  },
+				  {
+					"saturation": 100
+				  },
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "landscape",
+				"elementType": "geometry",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "landscape",
+				"elementType": "geometry.fill",
+				"stylers": [
+				  {
+					"color": "#f4f4f4"
+				  },
+				  {
+					"visibility": "on"
+				  }
+				]
+			  },
+			  {
+				"featureType": "poi",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "road",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "road",
+				"elementType": "labels.icon",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "transit",
+				"stylers": [
+				  {
+					"visibility": "off"
+				  }
+				]
+			  },
+			  {
+				"featureType": "water",
+				"stylers": [
+				  {
+					"saturation": 100
+				  },
+				  {
+					"lightness": -15
+				  }
+				]
+			  }
+			]
+		});
+		
+		var infowindowNation = new google.maps.InfoWindow({
+			content: nationContentString
+		});
+
+		var infowindowState = new google.maps.InfoWindow({
+			content: stateContentString
+		});
+
+		var infowindowCounty = new google.maps.InfoWindow({
+			content: countyContentString
+		});
+
+		var infowindowSchool = new google.maps.InfoWindow({
+			content: schoolContentString
+		});
+
+		var infowindowBuilding = new google.maps.InfoWindow({
+			content: buildingContentString
+		});
+
+		//Polygon Data for United States, NC, Charlotte, UNCC, Woodward
+		  var nationLayer = new google.maps.Data({map:map});
+		  var stateLayer = new google.maps.Data({map:map});
+		  var countyLayer = new google.maps.Data({map:map});
+		  var schoolLayer = new google.maps.Data({map:map});
+		  var woodwardLayer = new google.maps.Data({map:map});
+		  
+		//GEOJSON from Johan github
+		  nationLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA.geo.json');
+		  stateLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/NC.geo.json');
+		  countyLayer.loadGeoJson('charlotte_zoning_1.json');
+		  schoolLayer.loadGeoJson('UNCC_geoJSON.json');
+		  woodwardLayer.loadGeoJson('woodward_geoJSON.json')
+		  
+			var nationMarker = new google.maps.Marker({
+				position: nationCenter,
+				map: map,
+				title: 'Nation Marker',
+				visible: false
+			});
+
+			var stateMarker = new google.maps.Marker({
+				position: stateCenter,
+				map: map,
+				title: 'State Marker',
+				visible: false
+			});
+
+			var countyMarker = new google.maps.Marker({
+				position: countyCenter,
+				map: map,
+				title: 'County Marker',
+				visible: false
+			});
+
+			var schoolMarker = new google.maps.Marker({
+				position: schoolCenter,
+				map: map,
+				title: 'County Marker',
+				visible: false
+			});
+
+			var buildingMarker = new google.maps.Marker({
+				position: buildingCenter,
+				map: map,
+				title: 'Building Marker',
+				visible: false
+			});
+
+		//Styling for Polygon data
+			infowindowNation.open(map, nationMarker);
+		
+		  nationLayer.setStyle({
+		  	fillColor: '#00703C',
+			fillOpacity: 1,
+			strokeColor: '#00703C',
+		  	strokeWeight: 2,
+			visible: true,
+			clickable: true
+		});
+		  stateLayer.setStyle({
+			visible: false,
+			clickable: false
+		});
+		  countyLayer.setStyle({
+			visible: false,
+			clickable: false
+		});
+		  schoolLayer.setStyle({
+			visible: false,
+			clickable: false
+		});
+		  woodwardLayer.setStyle({
+			visible: false,
+			clickable: false
+		});
+		  
+		//listener to call zoom in function from one polygon to another as a polygon is clicked
+		  nationLayer.addListener('click', State);  
+		  stateLayer.addListener('click', County);
+		  countyLayer.addListener('click', School);
+		  schoolLayer.addListener('click', Building);
+		  
+		  //nationLayer.addListener('dblclick', State);  
+		  //stateLayer.addListener('dblclick', County);
+		  map.addListener('click', function(){
+			  if(marker == 1){Nation();}
+			  if(marker == 2){State();}
+			  if(marker == 3){County();}
+			  if(marker == 4){School();}
+		  });
+		  schoolLayer.addListener('dblclick', County);
+
+		//Functions navigating between the various levels 
+		  function Nation(){
+				if(marker==1){
+					infowindowState.close();
+				}
+				infowindowNation.open(map, nationMarker);
+			  marker = 0;
+			  nationLayer.setStyle({
+				fillColor: '#00703C',
+				fillOpacity: 1,
+				strokeColor: '#00703C',
+				strokeWeight: 2,
+			  });
+			  stateLayer.setStyle({
+				  visible: false
+			  });
+			  countyLayer.setStyle({
+				 visible: false
+			  });
+			  schoolLayer.setStyle({
+				  visible: false
+			  });
+			  map.setCenter(nationCenter);
+			  map.setZoom(5);
+			  
+			  //Remove infowindow background
+			  google.maps.event.addListener(map, 'idle', function(){
+				  jQuery('.gm-style-iw').prev('div').remove();
+			  }); 
+		  }
+		  function State(){
+				if(marker==0){
+					infowindowNation.close(map, nationMarker);
+				}
+				else{
+					infowindowCounty.close(map, countyMarker);
+				}
+				infowindowState.open(map, stateMarker);
+			  marker = 1;
+			  stateLayer.setStyle({
+				fillColor: '#00703C',
+				fillOpacity: 1,
+				strokeColor: '#00703C',
+				strokeWeight: 2,
+			  });
+			  nationLayer.setStyle({
+				  visible: false
+			  });
+			  countyLayer.setStyle({
+				 visible: false
+			  });
+			  schoolLayer.setStyle({
+				  visible: false
+			  });
+			  map.setCenter(stateCenter);
+			  map.setZoom(7);
+			  
+			//Remove infowindow background
+			  google.maps.event.addListener(map, 'idle', function(){
+				  jQuery('.gm-style-iw').prev('div').remove();
+			  }); 
+		  } 
+		  function County(){
+				if(marker==1){
+					infowindowState.close();
+				}
+				else{
+					infowindowSchool.close();
+				}
+				infowindowCounty.open(map, countyMarker);
+			  marker = 2;
+			  countyLayer.setStyle({
+				fillColor: '#00703C',
+				fillOpacity: 1,
+				strokeColor: '#00703C',
+				strokeWeight: 2,
+			  });
+			  	nationLayer.setStyle({
+				    visible: false
+			  });
+			  	stateLayer.setStyle({
+				 	visible: false
+			  });
+			  schoolLayer.setStyle({
+				  visible: false
+			  });
+			  map.setCenter(countyCenter);
+			  map.setZoom(10);
+			  
+			  //Remove infowindow background
+	   		  google.maps.event.addListener(map, 'idle', function(){
+    			jQuery('.gm-style-iw').prev('div').remove();
+		  	  }); 
+			}
+		  function School(){
+				if(marker==2){
+					infowindowCounty.close();
+				}
+				else{
+					infowindowBuilding.close();
+				}
+				infowindowSchool.open(map, schoolMarker);
+			  marker = 3;
+			  schoolLayer.setStyle({
+				fillColor: '#00703C',
+				fillOpacity: 1,
+				strokeColor: '#00703C',
+				strokeWeight: 2,
+			  });
+			  nationLayer.setStyle({
+				  visible: false
+			  });
+			  stateLayer.setStyle({
+				 	visible: false
+			  });
+			  countyLayer.setStyle({
+				 visible: false
+			  });	
+			  woodwardLayer.setStyle({
+				 visible: false
+			  });	
+			  map.setCenter(schoolCenter);
+			  map.setZoom(13);
+	
+			//Remove infowindow background
+			google.maps.event.addListener(map, 'idle', function(){
+    			jQuery('.gm-style-iw').prev('div').remove();
+		  	}); 
+		  }
+		  function Building(){
+				infowindowSchool.close();
+				infowindowBuilding.open(map, schoolMarker);
+			  marker = 4;
+			  woodwardLayer.setStyle({
+				fillColor: '#00703C',
+				fillOpacity: 1,
+				strokeColor: '#00703C',
+				strokeWeight: 2,
+			  });
+			  nationLayer.setStyle({
+				  visible: false
+			  });
+			  stateLayer.setStyle({
+				  visible: false
+			  });
+			  countyLayer.setStyle({
+				 visible: false
+			  });
+			  schoolLayer.setStyle({
+				  visible: false
+			  });
+			  map.setCenter(buildingCenter);
+			  map.setZoom(16);
+			  
+			//Remove infowindow background
+			google.maps.event.addListener(map, 'idle', function(){
+    			jQuery('.gm-style-iw').prev('div').remove();
+		  	}); 
+		  }
+		  
+		  //Removes infowindow background
+		  google.maps.event.addListener(map, 'idle', function(){
+    		jQuery('.gm-style-iw').prev('div').remove();
+		  }); 
+	  }
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApa2GOvUTjcDKfvQ04IHqvvk__TfFfOPI&callback=initMap"
+    async defer></script>
+</body>
+
+</html>

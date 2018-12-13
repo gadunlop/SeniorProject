@@ -73,16 +73,8 @@
 	  
     <script>
 		
-		//Add Anime.js Fireworks effect on click
-		//Code adapted from example by Anime.js creator, Julian Garnier: https://codepen.io/juliangarnier/pen/gmOwJX 
-		$(function () {
-			$('#map').clickFireworks({
-				id: 'fireworks', // canvas id
-				appendTo: '#map', // append canvas to where, default is body
-				zIndex: 1000 // canvas z-index, make it higher than anything on the page
-			});
-		});
-		
+
+	
 		//Various Variables for relevant location
       	var map;
 		var woodward = {lat: 35.307462, lng: -80.735690};
@@ -104,7 +96,15 @@
 
 				
 		
+		//Add Anime.js Fireworks effect on click
+		//Code adapted from example by Anime.js creator, Julian Garnier: https://codepen.io/juliangarnier/pen/gmOwJX 
+		$('#map').clickFireworks({
+			id: 'fireworks', // canvas id
+			appendTo: '#map', // append canvas to the map
+			zIndex: 1000 // canvas z-index, make it higher than anything on the page
+		});
 
+	
       function initMap() { 
         map = new google.maps.Map(document.getElementById('map'), {
           center: nationCenter,
@@ -333,12 +333,12 @@
 		  //nationLayer.addListener('dblclick', State);  
 		  //stateLayer.addListener('dblclick', County);
 		  map.addListener('click', function(){
+			
 			  if(marker == 1){Nation();}
 			  if(marker == 2){State();}
 			  if(marker == 3){County();}
 			  if(marker == 4){School();}
 		  });
-		  schoolLayer.addListener('dblclick', County);
 
 		//Functions navigating between the various levels 
 		  function Nation(){

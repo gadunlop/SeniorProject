@@ -73,7 +73,9 @@
 	  
     <script>
 		
-
+		//Variables to hold sound files
+		var zoom_in = new Audio("sounds/zoom_in.mp3"); // buffers automatically when created
+		var zoom_out = new Audio("sounds/zoom_out.mp3")
 	
 		//Various Variables for relevant location
       	var map;
@@ -297,7 +299,7 @@
 			});
 
 		//Styling for Polygon data
-			infowindowNation.open(map, nationMarker);
+		  infowindowNation.open(map, nationMarker);
 		
 		  nationLayer.setStyle({
 		  	fillColor: '#00703C',
@@ -325,19 +327,21 @@
 		});
 		  
 		//listener to call zoom in function from one polygon to another as a polygon is clicked
-		  nationLayer.addListener('click', State);  
-		  stateLayer.addListener('click', County);
-		  countyLayer.addListener('click', School);
-		  schoolLayer.addListener('click', Building);
+		  nationLayer.addListener('click', function(){ State(); zoom_in.play(); });  
+		  stateLayer.addListener('click', function(){County(); zoom_in.play(); });  
+		  countyLayer.addListener('click', function(){School(); zoom_in.play(); });
+		  schoolLayer.addListener('click', function(){ Building(); zoom_in.play(); });
 		  
 		  //nationLayer.addListener('dblclick', State);  
 		  //stateLayer.addListener('dblclick', County);
 		  map.addListener('click', function(){
-			
-			  if(marker == 1){Nation();}
-			  if(marker == 2){State();}
-			  if(marker == 3){County();}
-			  if(marker == 4){School();}
+			  if(marker !=0){
+				  zoom_out.play();
+				  if(marker == 1){Nation();}
+				  if(marker == 2){State();}
+				  if(marker == 3){County();}
+				  if(marker == 4){School();}
+			  }
 		  });
 
 		//Functions navigating between the various levels 

@@ -21,7 +21,10 @@
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
+		position: fixed;
         height: 100%;
+/*		transform: translateY(-2500px);*/
+		opacity: 0;
       }
       /* Optional: Makes the sample page fill the window. */
       html, body {
@@ -41,7 +44,6 @@
 		   margin: 1px;
 		   border-radius: 2px 2px 0 0; /* In accordance with the rounding of the default infowindow corners. */
 		}
-
 		/*Styling Adapted from tutorial at: http://en.marnoto.com/2014/09/5-formas-de-personalizar-infowindow.html*/
 		.gm-style-iw {
 			top: 15px !important;
@@ -51,7 +53,6 @@
 			border: 1px solid rgba(72, 181, 233, 0.6);
 			border-radius: 2px 2px 10px 10px;
 		}
-
 		#iw-container .iw-title {
 			font-family: 'Open Sans Condensed', sans-serif;
 			font-size: 60px;
@@ -62,20 +63,67 @@
 			margin: 0;
 			border-radius: 2px 2px 0 0;
 		}
+	/*For SVG overlay with anime.js*/
+		.polymorph{
+			fill:#046A38;
+			position: absolute;
+			z-index: 2;
 
+		}
+		
+		#b1{
+			position: absolute;
+			margin: 10em auto 0 auto;
+			left:45%;
+			right:0;
+			width 30%;
+			background: none;
+			border: 3px solid #fff;
+			border-radius: 5px;
+			padding: 15px;
+			color: #fff;
+			font-size:2.5em;
+			outline:10;
+		}	
 
+		#info{
+			position: absolute;
+			color: black;
+			left:26%;
+			top: 0;
+			opacity: 1;
+			width: 45%;
+			padding: 15px;
+			color: #fff;
+			font-size:3em;
+			outline:10;
+			text-align: center;
+			font-family: "Gill Sans", "Gill Sans MT", "Myriad Pro", "DejaVu Sans Condensed", Helvetica, Arial, "sans-serif";
+		}
     </style>
 	
-  <body>
-	  
+  <body> 
+
+
+	<!--The section of HTML for the Overlay-->
+	<button id="b1">START</button>
+	<svg viewBox="0 0 1920 1080">
+	<polygon class="polymorph" points='1920,1080 0,1080 0,0 960,0 1920,0' />
+	</svg>  
+	<div id=info>
+	  <p>Welcome to Woodward Hall, please feel free to click through our interactive map to see what's (sort of) trending!</p>
+	</div>
+	<!--The section of HTML for the Map-->
     <div id="map"></div>
+	
+
 	  
     <script>
-		
+		//Variable to get button element
+		var btn = document.getElementById('b1');
 		//Variables to hold sound files
 		var zoom_in = new Audio("sounds/zoom_in.mp3"); // buffers automatically when created
 		var zoom_out = new Audio("sounds/zoom_out.mp3")
-
 		//Random hashtags
 		var nationTags = ["#TeamUSA",
 											"#CardiB",
@@ -84,7 +132,6 @@
 											"#YouTubeRewind",
 											"#Kanye",
 											"#Addreall"];
-
 		var stateTags = ["#Panthers",
 										 "#Irma",
 								     "#SnowDay",
@@ -92,7 +139,6 @@
 										 "#FullTime",
 										 "#Judges",
 										 "#WorkFromHome"];
-
 		var countyTags = ["#Hornets",
 										 	"#Blizzard",
 								     	"#Congratulations",
@@ -100,7 +146,6 @@
 										 	"#Hope",
 										 	"#NoDa",
 										 	"#CraftBeer"];
-
 		var schoolTags = ["Graduation",
 										  "#UNCC",
 								      "#Nursing",
@@ -108,7 +153,6 @@
 										  "#Love",
 										  "#Girls",
 										  "#Niners"];
-
 		var buildingTags = ["#CCI",
 												"#LunchAndLearn",
 								     		"#ACM",
@@ -135,7 +179,6 @@
 		var countyContentString = '<div id="iw-container"><div class="iw-title">' + countyTags[Math.floor(Math.random() * 6)] + '</div></div>';
 		var schoolContentString = '<div id="iw-container"><div class="iw-title">' + schoolTags[Math.floor(Math.random() * 6)] + '</div></div>';
 		var buildingContentString = '<div id="iw-container"><div class="iw-title">' + buildingTags[Math.floor(Math.random() * 6)] + '</div></div>';
-
 				
 		
 		//Add Anime.js Fireworks effect on click
@@ -145,411 +188,474 @@
 			appendTo: '#map', // append canvas to the map
 			zIndex: 1000 // canvas z-index, make it higher than anything on the page
 		});
-
 	
-      function initMap() { 
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: nationCenter,
-          zoom: 5,
-
-			//Styling for the map in UNCC colors
-			styles:[
-			  {
-				"elementType": "labels",
-				"stylers": [
+		function initMap() { 
+			
+			map = new google.maps.Map(document.getElementById('map'), {
+			  center: nationCenter,
+			  zoom: 5,
+				//Styling for the map in UNCC colors
+				styles:[
 				  {
-					"visibility": "off"
-				  }
-				]
-			  },
-			  {
-				"featureType": "administrative",
-				"elementType": "geometry",
-				"stylers": [
-				  {
-					"visibility": "off"
-				  }
-				]
-			  },
-			  {
-				"featureType": "administrative.land_parcel",
-				"stylers": [
-				  {
-					"visibility": "off"
-				  }
-				]
-			  },
-			  {
-				"featureType": "administrative.neighborhood",
-				"stylers": [
-				  {
-					"visibility": "off"
-				  }
-				]
-			  },
-			  {
-				"featureType": "landscape",
-				"stylers": [
-				  {
-					"color": "#000000"
+					"elementType": "labels",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
 				  },
 				  {
-					"saturation": 100
+					"featureType": "administrative",
+					"elementType": "geometry",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
 				  },
 				  {
-					"visibility": "off"
-				  }
-				]
-			  },
-			  {
-				"featureType": "landscape",
-				"elementType": "geometry",
-				"stylers": [
-				  {
-					"visibility": "off"
-				  }
-				]
-			  },
-			  {
-				"featureType": "landscape",
-				"elementType": "geometry.fill",
-				"stylers": [
-				  {
-					"color": "#f4f4f4"
+					"featureType": "administrative.land_parcel",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
 				  },
 				  {
-					"visibility": "on"
-				  }
-				]
-			  },
-			  {
-				"featureType": "poi",
-				"stylers": [
-				  {
-					"visibility": "off"
-				  }
-				]
-			  },
-			  {
-				"featureType": "road",
-				"stylers": [
-				  {
-					"visibility": "off"
-				  }
-				]
-			  },
-			  {
-				"featureType": "road",
-				"elementType": "labels.icon",
-				"stylers": [
-				  {
-					"visibility": "off"
-				  }
-				]
-			  },
-			  {
-				"featureType": "transit",
-				"stylers": [
-				  {
-					"visibility": "off"
-				  }
-				]
-			  },
-			  {
-				"featureType": "water",
-				"stylers": [
-				  {
-					"saturation": 100
+					"featureType": "administrative.neighborhood",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
 				  },
 				  {
-					"lightness": -15
+					"featureType": "landscape",
+					"stylers": [
+					  {
+						"color": "#000000"
+					  },
+					  {
+						"saturation": 100
+					  },
+					  {
+						"visibility": "off"
+					  }
+					]
+				  },
+				  {
+					"featureType": "landscape",
+					"elementType": "geometry",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
+				  },
+				  {
+					"featureType": "landscape",
+					"elementType": "geometry.fill",
+					"stylers": [
+					  {
+						"color": "#f4f4f4"
+					  },
+					  {
+						"visibility": "on"
+					  }
+					]
+				  },
+				  {
+					"featureType": "poi",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
+				  },
+				  {
+					"featureType": "road",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
+				  },
+				  {
+					"featureType": "road",
+					"elementType": "labels.icon",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
+				  },
+				  {
+					"featureType": "transit",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
+				  },
+				  {
+					"featureType": "water",
+					"stylers": [
+					  {
+						"saturation": 100
+					  },
+					  {
+						"lightness": -15
+					  }
+					]
 				  }
 				]
-			  }
-			]
-		});
-		
-		var infowindowNation = new google.maps.InfoWindow({
-			content: nationContentString
-		});
-
-		var infowindowState = new google.maps.InfoWindow({
-			content: stateContentString
-		});
-
-		var infowindowCounty = new google.maps.InfoWindow({
-			content: countyContentString
-		});
-
-		var infowindowSchool = new google.maps.InfoWindow({
-			content: schoolContentString
-		});
-
-		var infowindowBuilding = new google.maps.InfoWindow({
-			content: buildingContentString
-		});
-
-		//Polygon Data for United States, NC, Charlotte, UNCC, Woodward
-		  var nationLayer = new google.maps.Data({map:map});
-		  var stateLayer = new google.maps.Data({map:map});
-		  var countyLayer = new google.maps.Data({map:map});
-		  var schoolLayer = new google.maps.Data({map:map});
-		  var woodwardLayer = new google.maps.Data({map:map});
-		  
-		//GEOJSON from Johan github
-		  nationLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA.geo.json');
-		  stateLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/NC.geo.json');
-		  countyLayer.loadGeoJson('charlotte_zoning_1.json');
-		  schoolLayer.loadGeoJson('UNCC_geoJSON.json');
-		  woodwardLayer.loadGeoJson('woodward_geoJSON.json')
-		  
-			var nationMarker = new google.maps.Marker({
-				position: nationCenter,
-				map: map,
-				title: 'Nation Marker',
-				visible: false
 			});
 
-			var stateMarker = new google.maps.Marker({
-				position: stateCenter,
-				map: map,
-				title: 'State Marker',
-				visible: false
+			var infowindowNation = new google.maps.InfoWindow({
+				content: nationContentString
 			});
-
-			var countyMarker = new google.maps.Marker({
-				position: countyCenter,
-				map: map,
-				title: 'County Marker',
-				visible: false
+			var infowindowState = new google.maps.InfoWindow({
+				content: stateContentString
 			});
-
-			var schoolMarker = new google.maps.Marker({
-				position: schoolCenter,
-				map: map,
-				title: 'County Marker',
-				visible: false
+			var infowindowCounty = new google.maps.InfoWindow({
+				content: countyContentString
 			});
-
-			var buildingMarker = new google.maps.Marker({
-				position: buildingCenter,
-				map: map,
-				title: 'Building Marker',
-				visible: false
+			var infowindowSchool = new google.maps.InfoWindow({
+				content: schoolContentString
 			});
+			var infowindowBuilding = new google.maps.InfoWindow({
+				content: buildingContentString
+			});
+			//Polygon Data for United States, NC, Charlotte, UNCC, Woodward
+			  var nationLayer = new google.maps.Data({map:map});
+			  var stateLayer = new google.maps.Data({map:map});
+			  var countyLayer = new google.maps.Data({map:map});
+			  var schoolLayer = new google.maps.Data({map:map});
+			  var woodwardLayer = new google.maps.Data({map:map});
 
-		//Styling for Polygon data
-		  infowindowNation.open(map, nationMarker);
-		
-		  nationLayer.setStyle({
-		  	fillColor: '#00703C',
-			fillOpacity: 1,
-			strokeColor: '#00703C',
-		  	strokeWeight: 2,
-			visible: true,
-			clickable: true
-		});
-		  stateLayer.setStyle({
-			visible: false,
-			clickable: false
-		});
-		  countyLayer.setStyle({
-			visible: false,
-			clickable: false
-		});
-		  schoolLayer.setStyle({
-			visible: false,
-			clickable: false
-		});
-		  woodwardLayer.setStyle({
-			visible: false,
-			clickable: false
-		});
-		  
-		//listener to call zoom in function from one polygon to another as a polygon is clicked
-		  nationLayer.addListener('click', function(){ State(); zoom_in.play(); });  
-		  stateLayer.addListener('click', function(){County(); zoom_in.play(); });  
-		  countyLayer.addListener('click', function(){School(); zoom_in.play(); });
-		  schoolLayer.addListener('click', function(){ Building(); zoom_in.play(); });
-		  
-		  //nationLayer.addListener('dblclick', State);  
-		  //stateLayer.addListener('dblclick', County);
-		  map.addListener('click', function(){
-			  if(marker !=0){
-				  zoom_out.play();
-				  if(marker == 1){Nation();}
-				  if(marker == 2){State();}
-				  if(marker == 3){County();}
-				  if(marker == 4){School();}
-			  }
-		  });
+			//GEOJSON from Johan github
+			  nationLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA.geo.json');
+			  stateLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/NC.geo.json');
+			  countyLayer.loadGeoJson('geoJSON/charlotte_geoJSON.json');
+			  schoolLayer.loadGeoJson('geoJSON/UNCC_geoJSON.json');
+			  woodwardLayer.loadGeoJson('geoJSON/woodward_geoJSON.json')
 
-		//Functions navigating between the various levels 
-		  function Nation(){
-				if(marker==1){
-					infowindowState.close();
-				}
-				infowindowNation.open(map, nationMarker);
-			  marker = 0;
+				var nationMarker = new google.maps.Marker({
+					position: nationCenter,
+					map: map,
+					title: 'Nation Marker',
+					visible: false
+				});
+				var stateMarker = new google.maps.Marker({
+					position: stateCenter,
+					map: map,
+					title: 'State Marker',
+					visible: false
+				});
+				var countyMarker = new google.maps.Marker({
+					position: countyCenter,
+					map: map,
+					title: 'County Marker',
+					visible: false
+				});
+				var schoolMarker = new google.maps.Marker({
+					position: schoolCenter,
+					map: map,
+					title: 'County Marker',
+					visible: false
+				});
+				var buildingMarker = new google.maps.Marker({
+					position: buildingCenter,
+					map: map,
+					title: 'Building Marker',
+					visible: false
+				});
+			//Styling for Polygon data
+			  infowindowNation.open(map, nationMarker);
+
 			  nationLayer.setStyle({
 				fillColor: '#00703C',
 				fillOpacity: 1,
 				strokeColor: '#00703C',
 				strokeWeight: 2,
-			  });
+				visible: true,
+				clickable: true
+			});
 			  stateLayer.setStyle({
-				  visible: false
-			  });
+				visible: false,
+				clickable: false
+			});
 			  countyLayer.setStyle({
-				 visible: false
-			  });
+				visible: false,
+				clickable: false
+			});
 			  schoolLayer.setStyle({
-				  visible: false
+				visible: false,
+				clickable: false
+			});
+			  woodwardLayer.setStyle({
+				visible: false,
+				clickable: false
+			});
+
+			//listener to call zoom in function from one polygon to another as a polygon is clicked
+			  nationLayer.addListener('click', function(){ State(); zoom_in.play(); });  
+			  stateLayer.addListener('click', function(){County(); zoom_in.play(); });  
+			  countyLayer.addListener('click', function(){School(); zoom_in.play(); });
+			  schoolLayer.addListener('click', function(){ Building(); zoom_in.play(); });
+
+			  //nationLayer.addListener('dblclick', State);  
+			  //stateLayer.addListener('dblclick', County);
+			  map.addListener('click', function(){
+				  if(marker !=0){
+					  zoom_out.play();
+					  if(marker == 1){Nation();}
+					  if(marker == 2){State();}
+					  if(marker == 3){County();}
+					  if(marker == 4){School();}
+				  }
 			  });
-			  map.setCenter(nationCenter);
-			  map.setZoom(5);
-			  
-			  //Remove infowindow background
-			  google.maps.event.addListener(map, 'idle', function(){
-				  jQuery('.gm-style-iw').prev('div').remove();
-			  }); 
-		  }
-		  function State(){
-				if(marker==0){
-					infowindowNation.close(map, nationMarker);
+			//Functions navigating between the various levels 
+			  function Nation(){
+					if(marker==1){
+						infowindowState.close();
+					}
+				  	if(marker==4){
+						infowindowBuilding.close();
+					}
+					infowindowNation.open(map, nationMarker);
+				  marker = 0;
+				  nationLayer.setStyle({
+					fillColor: '#00703C',
+					fillOpacity: 1,
+					strokeColor: '#00703C',
+					strokeWeight: 2,
+				  });
+				  stateLayer.setStyle({
+					  visible: false
+				  });
+				  countyLayer.setStyle({
+					 visible: false
+				  });
+				  schoolLayer.setStyle({
+					  visible: false
+				  });
+				  map.setCenter(nationCenter);
+				  map.setZoom(5);
+
+				  //Remove infowindow background
+				  google.maps.event.addListener(map, 'idle', function(){
+					  jQuery('.gm-style-iw').prev('div').remove();
+				  }); 
+			  }
+			  function State(){
+					if(marker==0){
+						infowindowNation.close(map, nationMarker);
+					}
+					else{
+						infowindowCounty.close(map, countyMarker);
+					}
+					infowindowState.open(map, stateMarker);
+				  marker = 1;
+				  stateLayer.setStyle({
+					fillColor: '#00703C',
+					fillOpacity: 1,
+					strokeColor: '#00703C',
+					strokeWeight: 2,
+				  });
+				  nationLayer.setStyle({
+					  visible: false
+				  });
+				  countyLayer.setStyle({
+					 visible: false
+				  });
+				  schoolLayer.setStyle({
+					  visible: false
+				  });
+				  map.setCenter(stateCenter);
+				  map.setZoom(7);
+
+				//Remove infowindow background
+				  google.maps.event.addListener(map, 'idle', function(){
+					  jQuery('.gm-style-iw').prev('div').remove();
+				  }); 
+			  } 
+			  function County(){
+					if(marker==1){
+						infowindowState.close();
+					}
+					else{
+						infowindowSchool.close();
+					}
+					infowindowCounty.open(map, countyMarker);
+				  marker = 2;
+				  countyLayer.setStyle({
+					fillColor: '#00703C',
+					fillOpacity: 1,
+					strokeColor: '#00703C',
+					strokeWeight: 2,
+				  });
+					nationLayer.setStyle({
+						visible: false
+				  });
+					stateLayer.setStyle({
+						visible: false
+				  });
+				  schoolLayer.setStyle({
+					  visible: false
+				  });
+				  map.setCenter(countyCenter);
+				  map.setZoom(10);
+
+				  //Remove infowindow background
+				  google.maps.event.addListener(map, 'idle', function(){
+					jQuery('.gm-style-iw').prev('div').remove();
+				  }); 
 				}
-				else{
-					infowindowCounty.close(map, countyMarker);
-				}
-				infowindowState.open(map, stateMarker);
-			  marker = 1;
-			  stateLayer.setStyle({
-				fillColor: '#00703C',
-				fillOpacity: 1,
-				strokeColor: '#00703C',
-				strokeWeight: 2,
-			  });
-			  nationLayer.setStyle({
-				  visible: false
-			  });
-			  countyLayer.setStyle({
-				 visible: false
-			  });
-			  schoolLayer.setStyle({
-				  visible: false
-			  });
-			  map.setCenter(stateCenter);
-			  map.setZoom(7);
-			  
-			//Remove infowindow background
-			  google.maps.event.addListener(map, 'idle', function(){
-				  jQuery('.gm-style-iw').prev('div').remove();
-			  }); 
-		  } 
-		  function County(){
-				if(marker==1){
-					infowindowState.close();
-				}
-				else{
+			  function School(){
+					if(marker==2){
+						infowindowCounty.close();
+					}
+					else{
+						infowindowBuilding.close();
+					}
+					infowindowSchool.open(map, schoolMarker);
+				  marker = 3;
+				  schoolLayer.setStyle({
+					fillColor: '#00703C',
+					fillOpacity: 1,
+					strokeColor: '#00703C',
+					strokeWeight: 2,
+				  });
+				  nationLayer.setStyle({
+					  visible: false
+				  });
+				  stateLayer.setStyle({
+						visible: false
+				  });
+				  countyLayer.setStyle({
+					 visible: false
+				  });	
+				  woodwardLayer.setStyle({
+					 visible: false
+				  });	
+				  map.setCenter(schoolCenter);
+				  map.setZoom(13);
+
+				//Remove infowindow background
+				google.maps.event.addListener(map, 'idle', function(){
+					jQuery('.gm-style-iw').prev('div').remove();
+				}); 
+			  }
+			  function Building(){
 					infowindowSchool.close();
-				}
-				infowindowCounty.open(map, countyMarker);
-			  marker = 2;
-			  countyLayer.setStyle({
-				fillColor: '#00703C',
-				fillOpacity: 1,
-				strokeColor: '#00703C',
-				strokeWeight: 2,
-			  });
-			  	nationLayer.setStyle({
-				    visible: false
-			  });
-			  	stateLayer.setStyle({
-				 	visible: false
-			  });
-			  schoolLayer.setStyle({
-				  visible: false
-			  });
-			  map.setCenter(countyCenter);
-			  map.setZoom(10);
-			  
-			  //Remove infowindow background
-	   		  google.maps.event.addListener(map, 'idle', function(){
-    			jQuery('.gm-style-iw').prev('div').remove();
-		  	  }); 
-			}
-		  function School(){
-				if(marker==2){
-					infowindowCounty.close();
-				}
-				else{
-					infowindowBuilding.close();
-				}
-				infowindowSchool.open(map, schoolMarker);
-			  marker = 3;
-			  schoolLayer.setStyle({
-				fillColor: '#00703C',
-				fillOpacity: 1,
-				strokeColor: '#00703C',
-				strokeWeight: 2,
-			  });
-			  nationLayer.setStyle({
-				  visible: false
-			  });
-			  stateLayer.setStyle({
-				 	visible: false
-			  });
-			  countyLayer.setStyle({
-				 visible: false
-			  });	
-			  woodwardLayer.setStyle({
-				 visible: false
-			  });	
-			  map.setCenter(schoolCenter);
-			  map.setZoom(13);
-	
-			//Remove infowindow background
-			google.maps.event.addListener(map, 'idle', function(){
-    			jQuery('.gm-style-iw').prev('div').remove();
-		  	}); 
-		  }
-		  function Building(){
-				infowindowSchool.close();
-				infowindowBuilding.open(map, schoolMarker);
-			  marker = 4;
-			  woodwardLayer.setStyle({
-				fillColor: '#00703C',
-				fillOpacity: 1,
-				strokeColor: '#00703C',
-				strokeWeight: 2,
-			  });
-			  nationLayer.setStyle({
-				  visible: false
-			  });
-			  stateLayer.setStyle({
-				  visible: false
-			  });
-			  countyLayer.setStyle({
-				 visible: false
-			  });
-			  schoolLayer.setStyle({
-				  visible: false
-			  });
-			  map.setCenter(buildingCenter);
-			  map.setZoom(16);
-			  
-			//Remove infowindow background
-			google.maps.event.addListener(map, 'idle', function(){
-    			jQuery('.gm-style-iw').prev('div').remove();
-		  	}); 
-		  }
-		  
-		  //Removes infowindow background
-		  google.maps.event.addListener(map, 'idle', function(){
-    		jQuery('.gm-style-iw').prev('div').remove();
-		  }); 
-	  }
+					infowindowBuilding.open(map, schoolMarker);
+				  marker = 4;
+				  woodwardLayer.setStyle({
+					fillColor: '#00703C',
+					fillOpacity: 1,
+					strokeColor: '#00703C',
+					strokeWeight: 2,
+				  });
+				  nationLayer.setStyle({
+					  visible: false
+				  });
+				  stateLayer.setStyle({
+					  visible: false
+				  });
+				  countyLayer.setStyle({
+					 visible: false
+				  });
+				  schoolLayer.setStyle({
+					  visible: false
+				  });
+				  map.setCenter(buildingCenter);
+				  map.setZoom(16);
 
+				//Remove infowindow background
+				google.maps.event.addListener(map, 'idle', function(){
+					jQuery('.gm-style-iw').prev('div').remove();
+				}); 
+			  }
+			//Make Woodward turn gold on mouseover
+				woodwardLayer.addListener('mouseover', function(){
+					woodwardLayer.setStyle({
+						fillColor: '#B9975B',
+						strokeColor: '#B9975B'
+					});
+				});
+				woodwardLayer.addListener('mouseout', function(){
+					woodwardLayer.setStyle({
+					fillColor: '#00703C',
+					strokeColor: '#00703C'
+					});
+				});
+
+			  //Removes infowindow background
+			  google.maps.event.addListener(map, 'idle', function(){
+				jQuery('.gm-style-iw').prev('div').remove();
+			  }); 
+			
+			
+			
+
+			//Allows the overlay to show up and disappear
+			btn.onclick = function() {
+				Nation();
+				var morphing = anime({
+				  targets: '.polymorph',
+				  points: [
+					{value: '1920,1080 0,1080 0,0 966,546 1920,0'},
+					{value: '1920,1080 0,1080 0,1080 966,546 1920,1080'},
+					{value: '1920,2160 0,2160 0,2160 981,2160 1920,2160'}
+				  ],
+				  easing: 'easeOutQuad',
+				  duration: 2000,
+				  loop: false
+				});
+
+				anime({
+					targets: '#map',
+					opacity: 1,
+					duration: 2000,
+					translateY: -1080
+				})
+				anime({
+					targets: '#info',
+					opacity: 1,
+					duration: 2000
+					//translateY: -80
+				})
+				var revert = morphing.finished.then(() =>{
+					woodwardLayer.addListener('click', function(){
+						var morphing = anime({
+						  targets: '.polymorph',
+						  points: [
+							  {value: '1920,2160 0,2160 0,2160 981,2160 1920,2160'},
+							  {value: '1920,1080 0,1080 0,1080 966,546 1920,1080'},
+							  {value: '1920,1080 0,1080 0,0 966,546 1920,0'},
+							  {value: '1920,1080 0,1080 0,0 960,0 1920,0'}
+						  ],
+						  easing: 'easeOutQuad',
+						  duration: 2000,
+						  loop: false
+						});
+						anime({
+							targets: '#map',
+							opacity: 0,
+							duration: 2000,
+							translateY: -2500
+						})
+						anime({
+							targets: '#info',
+							opacity: 1,
+							duration: 2000
+							//translateY: 0
+						})
+					});
+				})
+			}
+	  	}
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApa2GOvUTjcDKfvQ04IHqvvk__TfFfOPI&callback=initMap"
     async defer></script>

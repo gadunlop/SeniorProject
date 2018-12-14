@@ -11,7 +11,7 @@
             'z-index': params.zIndex + 1
         });
 
-		
+		//Variables for delaying the next burst
 		var go = true,
     	delay = 500; // one second
 		
@@ -37,6 +37,7 @@
 				let canvasEl = $(`#${params.id}`).get(0);
 				let ctx = canvasEl.getContext('2d');
 				let numberOfParticles = 20;
+				//Good ol UNCC colors
 				let colors = ['#046A38', '#B9975B', '#27251F'];
 
 				let setParticleDirection = function (p) {
@@ -68,9 +69,9 @@
 					p.x = x;
 					p.y = y;
 					p.color = '#FFF';
-					p.radius = 0.1;
+					p.radius = 10;
 					p.alpha = .5;
-					p.lineWidth = 6;
+					p.lineWidth = 36;
 					p.draw = function () {
 						ctx.globalAlpha = p.alpha;
 						ctx.beginPath();
@@ -149,7 +150,7 @@
 					setCanvasSize();
 					window.addEventListener('resize', setCanvasSize);
 				}
-					//Function to delay the fireworks if one is already displaying
+				//Function to delay the fireworks if one is already displaying
 				setTimeout(function () {
 						go = true;
 					}, delay)

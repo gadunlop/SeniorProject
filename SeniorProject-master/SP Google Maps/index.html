@@ -41,7 +41,6 @@
 		   margin: 1px;
 		   border-radius: 2px 2px 0 0; /* In accordance with the rounding of the default infowindow corners. */
 		}
-		}
 
 		/*Styling Adapted from tutorial at: http://en.marnoto.com/2014/09/5-formas-de-personalizar-infowindow.html*/
 		.gm-style-iw {
@@ -76,6 +75,47 @@
 		//Variables to hold sound files
 		var zoom_in = new Audio("sounds/zoom_in.mp3"); // buffers automatically when created
 		var zoom_out = new Audio("sounds/zoom_out.mp3")
+
+		//Random hashtags
+		var nationTags = ["#TeamUSA",
+											"#CardiB",
+											"#Blessed",
+											"#Strong",
+											"#YouTubeRewind",
+											"#Kanye",
+											"#Addreall"];
+
+		var stateTags = ["#Panthers",
+										 "#Irma",
+								     "#SnowDay",
+								     "#Hiring",
+										 "#FullTime",
+										 "#Judges",
+										 "#WorkFromHome"];
+
+		var countyTags = ["#Hornets",
+										 	"#Blizzard",
+								     	"#Congratulations",
+								     	"#NBA",
+										 	"#Hope",
+										 	"#NoDa",
+										 	"#CraftBeer"];
+
+		var schoolTags = ["Graduation",
+										  "#UNCC",
+								      "#Nursing",
+								      "#Engineer",
+										  "#Love",
+										  "#Girls",
+										  "#Niners"];
+
+		var buildingTags = ["#CCI",
+												"#LunchAndLearn",
+								     		"#ACM",
+								     		"#49SD",
+										 		"#STARS",
+										 		"#Gradution",
+										 		"#Degree"];
 	
 		//Various Variables for relevant location
       	var map;
@@ -90,11 +130,11 @@
 		var buildingCenter = {lat: 35.307462, lng: -80.735690};
 		
 		//The string content that will go inside the infoboxes
-		var nationContentString = '<div id="iw-container"><div class="iw-title">#ORANGEMANBAD</div></div>';
-		var stateContentString = '<div id="iw-container"><div class="iw-title">#VoteFraud</div></div>';
-		var countyContentString = '<div id="iw-container"><div class="iw-title">#LightRail</div></div>';
-		var schoolContentString = '<div id="iw-container"><div class="iw-title">#ORANGEMANBAD</div></div>';
-		var buildingContentString = '<div id="iw-container"><div class="iw-title">#LunchAndLearn</div></div>';
+		var nationContentString = '<div id="iw-container"><div class="iw-title">' + nationTags[Math.floor(Math.random() * 6)] + '</div></div>';
+		var stateContentString = '<div id="iw-container"><div class="iw-title">' + stateTags[Math.floor(Math.random() * 6)] + '</div></div>';
+		var countyContentString = '<div id="iw-container"><div class="iw-title">' + countyTags[Math.floor(Math.random() * 6)] + '</div></div>';
+		var schoolContentString = '<div id="iw-container"><div class="iw-title">' + schoolTags[Math.floor(Math.random() * 6)] + '</div></div>';
+		var buildingContentString = '<div id="iw-container"><div class="iw-title">' + buildingTags[Math.floor(Math.random() * 6)] + '</div></div>';
 
 				
 		
